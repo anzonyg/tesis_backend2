@@ -6,12 +6,25 @@ require('dotenv').config();
 
 const app = express();
 
-// Configurar CORS para permitir acceso desde el frontend en el puerto 5173
+// Definir los orígenes permitidos (frontend en local y en Render)
+const allowedOrigins = [
+  'http://localhost:5173',                        // Para desarrollo local
+  'https://tesis-frontend-jfsn.onrender.com'      // URL del frontend en producción (Render)
+];
+
+// Configuración de CORS
 app.use(cors({
-  origin: 'http://localhost:5173' // Cambia al dominio de tu frontend si es diferente
+  origin: function (origin, callback) {
+    // Permitir el acceso si el origen está en la lista o si es una solicitud sin origen (por ejemplo, desde Postman)
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 
-// Middleware
+// Middleware para bodyParser
 app.use(bodyParser.json());
 
 // Construir la URI de conexión a MongoDB Atlas usando las variables de entorno
@@ -25,12 +38,11 @@ mongoose.connect(MONGO_URI)
 // Usar el router definido en tasks.js
 app.use('/tasks', require('./routes/tasks'));
 
-// Router
+// Ruta raíz para verificar el estado del servidor
 app.get('', async (req, res) => {
   console.log(process.env.environment + 2);
   res.json("Inicio de servidor con éxito!");
 });
-
 
 // Configuración del puerto
 const PORT = process.env.PORT || 4000;
