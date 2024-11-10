@@ -25,6 +25,13 @@ mongoose.connect(MONGO_URI)
 // Usar el router definido en tasks.js
 app.use('/tasks', require('./routes/tasks'));
 
+// Router
+app.get('', async (req, res) => {
+  console.log(process.env.environment + 2);
+  res.json("Inicio de servidor con éxito!");
+});
+
+
 // Configuración del puerto
 const PORT = process.env.PORT || 4000;
 const server = app.listen(PORT, () => {

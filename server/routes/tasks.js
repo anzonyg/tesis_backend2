@@ -5,6 +5,11 @@ let arduinoData = {};
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
 
+router.get('/anzony', async (req, res) => {
+
+  res.json("exito ANZONY!!!");
+});
+
 // Ruta para recibir los datos del Arduino y guardarlos en la base de datos
 router.post('/send-data', (req, res) => {
   arduinoData = req.body;
